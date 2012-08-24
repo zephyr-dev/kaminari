@@ -35,6 +35,25 @@ describe 'Kaminari::Helpers' do
           subject { Paginator::PageProxy.new({:total_pages => 39}, 38, nil) }
           its(:last?) { should_not be_true }
         end
+
+        context "with a max_pages specified" do
+          subject { Paginator::PageProxy.new({:total_pages => 10, :max_pages => 5}, current_page, nil) }
+
+          context 'current_page < max_page' do
+            let(:current_page) { 2 }
+            its(:last?) { should be_false }
+          end
+
+          context 'current_page = max_page' do
+            let(:current_page) { 10 }
+            its(:last?) { should be_true }
+          end
+
+          context 'current_page > max_page' do
+            let(:current_page) { 11 }
+            its(:last?) { should be_true }
+          end
+        end
       end
 
       describe '#next?' do
@@ -119,6 +138,31 @@ describe 'Kaminari::Helpers' do
           end
         end
       end
+
+      describe '#past_max?' do
+        subject { Paginator::PageProxy.new({:max_pages => 10}, current_page, nil) }
+        context 'current_page < max_page' do
+          let(:current_page) { 2 }
+          its(:past_max?) { should be_false }
+        end
+
+        context 'current_page = max_page' do
+          let(:current_page) { 10 }
+          its(:past_max?) { should be_false }
+        end
+
+        context 'current_page > max_page' do
+          let(:current_page) { 11 }
+          its(:past_max?) { should be_true }
+        end
+
+        context "when there is no max" do
+          let(:max_page) { nil }
+          let(:current_page) { 10 }
+          its(:past_max?) { should be_false }
+        end
+      end
+
       describe '#was_truncated?' do
         before do
           stub(@template = Object.new) do
