@@ -149,6 +149,10 @@ module Kaminari
           page_past_max(@page)
         end
 
+        def max_pages
+          @options[:max_pages]
+        end
+
         # The last rendered tag was "truncated" or not
         def was_truncated?
           @last.is_a? Gap
@@ -177,7 +181,6 @@ module Kaminari
         private
 
         def page_past_max(page)
-          max_pages = @options[:max_pages]
           if max_pages.present?
             page > max_pages
           else

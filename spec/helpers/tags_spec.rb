@@ -163,6 +163,20 @@ describe 'Kaminari::Helpers' do
         end
       end
 
+      describe "#max_pages" do
+        subject { Paginator::PageProxy.new({:max_pages => max_pages}, 1, nil) }
+
+        context "max_pages is a number" do
+          let(:max_pages) { 25 }
+          its(:max_pages) { should == 25 }
+        end
+
+        context "max_pages is nil" do
+          let(:max_pages) { nil }
+          its(:max_pages) { should be_nil }
+        end
+      end
+
       describe '#was_truncated?' do
         before do
           stub(@template = Object.new) do
